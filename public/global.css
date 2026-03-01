@@ -1,11 +1,19 @@
 :root {
-  /* Mocha Flat palette */
-  --color-bg:          #F5E6D3;
-  --color-card:        #E8CDAA;
-  --color-border:      #A67B5B;
-  --color-text:        #4A2C1A;
-  --color-text-muted:  #7A5230;
-  --color-accent:      #C48A5C;
+  /* Mocha Flat palette - melhorado com contraste */
+  --color-bg:            #F8F3ED;
+  --color-surface:       #EFE5D9;
+  --color-card:          #E0CCBA;
+  --color-input:         #F5E6D3;
+  --color-expand-bg:     #FAF4EE;
+
+  --color-border:        #A87B5B;
+  --color-border-focus:  #8B6F47;
+
+  --color-text:          #3D2817;
+  --color-text-muted:    #866D52;
+
+  --color-accent:        #C48A5C;
+  --color-accent-dark:   #A87B5B;
 }
 
 

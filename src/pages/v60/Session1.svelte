@@ -233,7 +233,7 @@
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    padding-bottom: 8px;
+    padding-bottom: 12px;
     border-bottom: 2px solid var(--color-border);
   }
 
@@ -253,7 +253,7 @@
   .calculator__subtitle {
     margin: 0;
     font-size: 0.85rem;
-    color: var(--color-text-muted);
+    color: var(--color-text);
     font-weight: 500;
   }
 
@@ -288,11 +288,11 @@
   .details-chip {
     font-size: 0.78rem;
     font-weight: 600;
-    color: var(--color-text-muted);
-    background: var(--color-card);
+    color: var(--color-text);
+    background: var(--color-expand-bg);
     border: 1px solid var(--color-border);
     border-radius: 20px;
-    padding: 3px 10px;
+    padding: 4px 12px;
   }
 
   .details-row__btn {
@@ -315,7 +315,7 @@
   .details-row__btn--open {
     background: var(--color-accent);
     border-color: var(--color-accent);
-    color: var(--color-bg);
+    color: white;
   }
 
   /* expanded inputs */
@@ -324,7 +324,7 @@
     flex-direction: column;
     gap: 12px;
     padding: 14px;
-    background: var(--color-card);
+    background: var(--color-expand-bg);
     border: 1.5px solid var(--color-border);
     border-radius: 12px;
     overflow: hidden;
@@ -335,18 +335,22 @@
     padding: 14px;
     width: 100%;
     background: var(--color-accent);
-    color: var(--color-bg);
+    color: white;
     border: none;
     border-radius: 12px;
     font-size: 1rem;
     font-weight: 700;
     font-family: inherit;
     cursor: pointer;
-    transition: opacity 0.15s;
+    transition: background 0.2s, box-shadow 0.2s;
+  }
+
+  .calculator__btn-gerar:hover {
+    background: var(--color-accent-dark);
   }
 
   .calculator__btn-gerar:active {
-    opacity: 0.8;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 </style>
 

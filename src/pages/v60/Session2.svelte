@@ -12,6 +12,10 @@
       <span class="receita__resumo-value">{$v60State.gramas}g</span>
     </div>
     <div class="receita__resumo-item">
+      <span class="receita__resumo-label">Click do moedor</span>
+      <span class="receita__resumo-value">{$v60State.click}</span>
+    </div>
+    <div class="receita__resumo-item">
       <span class="receita__resumo-label">Água</span>
       <span class="receita__resumo-value">{$v60Recipe.aguaTotal}ml</span>
     </div>
@@ -63,20 +67,24 @@
   }
 
   .receita__btn-voltar {
-    background: none;
-    border: 1.5px solid var(--color-border);
+    background: var(--color-accent);
+    border: none;
     border-radius: 8px;
-    color: var(--color-accent);
+    color: white;
     font-size: 0.88rem;
     font-weight: 600;
     font-family: inherit;
-    padding: 6px 12px;
+    padding: 8px 14px;
     cursor: pointer;
-    transition: background 0.15s;
+    transition: background 0.2s, box-shadow 0.2s;
+  }
+
+  .receita__btn-voltar:hover {
+    background: var(--color-accent-dark);
   }
 
   .receita__btn-voltar:active {
-    background: var(--color-border);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 
   .receita__title {
@@ -90,7 +98,7 @@
     display: flex;
     flex-direction: column;
     gap: 0;
-    background: var(--color-card);
+    background: var(--color-input);
     border: 1.5px solid var(--color-border);
     border-radius: 12px;
     overflow: hidden;

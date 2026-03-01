@@ -16,13 +16,19 @@
     align-items: center;
     justify-content: center;
     gap: 4px;
-    background: var(--color-card);
+    background: var(--color-input);
     border: 1.5px solid var(--color-border);
     border-radius: 14px;
     padding: 16px 12px;
     min-width: 0;
     flex: 1 1 calc(50% - 8px);
     box-shadow: 0 2px 6px rgba(74, 44, 26, 0.1);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .fase-card:hover {
+    border-color: var(--color-border-focus);
+    box-shadow: 0 4px 12px rgba(139, 111, 71, 0.1);
   }
 
   .fase-card__header {
@@ -35,8 +41,9 @@
 
   .fase-card__time {
     font-size: 0.85rem;
-    color: var(--color-text-muted);
+    color: var(--color-text);
     font-variant-numeric: tabular-nums;
+    font-weight: 500;
   }
 
   .fase-card__acumulado {

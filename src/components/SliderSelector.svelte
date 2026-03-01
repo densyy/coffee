@@ -35,7 +35,7 @@
   .slider__track {
     display: flex;
     border-radius: 24px;
-    background: #C9A07A;
+    background: var(--color-card);
     overflow: hidden;
     border: 1.5px solid var(--color-border);
   }
@@ -48,7 +48,7 @@
     cursor: pointer;
     font-size: 0.8rem;
     font-weight: 500;
-    color: var(--color-text-muted);
+    color: var(--color-text);
     transition: background 0.15s, color 0.15s;
     border-radius: 0;
   }
@@ -58,7 +58,7 @@
 
   .slider__option--active {
     background: var(--color-accent);
-    color: var(--color-bg);
+    color: white;
     font-weight: 700;
   }
 

@@ -61,16 +61,17 @@
 
   .field__input {
     flex: 1;
-    padding: 10px 14px;
+    padding: 12px 14px;
     border: 1.5px solid var(--color-border);
     border-radius: 10px;
-    background: var(--color-card);
+    background: var(--color-input);
     color: var(--color-text);
     font-size: 1.1rem;
     font-weight: 600;
     font-family: inherit;
     outline: none;
-    transition: border-color 0.15s;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    appearance: textfield;;
     -moz-appearance: textfield;
   }
 
@@ -81,12 +82,14 @@
   }
 
   .field__input:focus {
-    border-color: var(--color-accent);
+    border-color: var(--color-border-focus);
+    box-shadow: 0 0 0 3px rgba(139, 111, 71, 0.1);
   }
 
   .field__input--readonly {
     cursor: default;
     opacity: 0.8;
+    background: var(--color-card);
   }
 
   .field__unit {
