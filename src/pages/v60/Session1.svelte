@@ -13,11 +13,6 @@
     on:change={(e) => updateState('gramas', e.detail)}
   />
 
-  <section class="calculator__field">
-    <span class="calculator__field-label">Moedor</span>
-    <p class="calculator__field-static">Modus C3</p>
-  </section>
-
   <FieldNumber
     id="click"
     label="Click do moedor"
@@ -34,23 +29,31 @@
       value={$v60State.forca}
       on:change={(e) => updateForca(e.detail)}
     />
+    <div class="details-row">
+      <div class="details-row__chips">
+        <span class="details-chip">1:{$v60State.proporcao}ml/g</span>
+        <span class="details-chip">{$v60Recipe.aguaTotal}ml de água</span>
+      </div>
+      <button
+        class="details-row__btn{openConc ? ' details-row__btn--open' : ''}"
+        type="button"
+        title="Ajustar proporção"
+        on:click={() => { openConc = !openConc }}
+      >✏</button>
+    </div>
+    {#if openConc}
+      <div class="details-expand" transition:slide={{ duration: 180 }}>
+        <FieldNumber
+          label="Proporção"
+          value={$v60State.proporcao}
+          unit="ml/g"
+          min={5}
+          max={30}
+          on:change={(e) => updateState('proporcao', e.detail)}
+        />
+      </div>
+    {/if}
   </section>
-
-  <FieldNumber
-    label="Proporção"
-    value={$v60State.proporcao}
-    unit="ml/g"
-    min={5}
-    max={30}
-    on:change={(e) => updateState('proporcao', e.detail)}
-  />
-
-  <FieldNumber
-    label="Quantidade de água"
-    value={$v60Recipe.aguaTotal}
-    unit="ml"
-    readonly
-  />
 
   <section class="calculator__field">
     <span class="calculator__field-label">Torra do café</span>
@@ -59,20 +62,30 @@
       value={$v60State.torra}
       on:change={(e) => updateTorra(e.detail)}
     />
-  </section>
-
-  <FieldNumber
-    label="Temperatura"
-    value={$v60State.temperatura}
-    unit="°C"
-    min={80}
-    max={100}
-    on:change={(e) => updateState('temperatura', e.detail)}
-  />
-
-  <section class="calculator__field">
-    <span class="calculator__field-label">Tempo total</span>
-    <p class="calculator__field-static">{$v60Recipe.tempoTotal}</p>
+    <div class="details-row">
+      <div class="details-row__chips">
+        <span class="details-chip">{$v60State.temperatura}°C</span>
+        <span class="details-chip">{$v60Recipe.tempoTotal}</span>
+      </div>
+      <button
+        class="details-row__btn{openTorra ? ' details-row__btn--open' : ''}"
+        type="button"
+        title="Ajustar temperatura"
+        on:click={() => { openTorra = !openTorra }}
+      >✏</button>
+    </div>
+    {#if openTorra}
+      <div class="details-expand" transition:slide={{ duration: 180 }}>
+        <FieldNumber
+          label="Temperatura"
+          value={$v60State.temperatura}
+          unit="°C"
+          min={80}
+          max={100}
+          on:change={(e) => updateState('temperatura', e.detail)}
+        />
+      </div>
+    {/if}
   </section>
 
   <section class="calculator__field">
@@ -82,25 +95,39 @@
       value={$v60State.sabor}
       on:change={(e) => updateSabor(e.detail)}
     />
+    <div class="details-row">
+      <div class="details-row__chips">
+        <span class="details-chip">Fase 1: {$v60State.sabor_pct1}%</span>
+        <span class="details-chip">Fase 2: {$v60State.sabor_pct2}%</span>
+      </div>
+      <button
+        class="details-row__btn{openSabor ? ' details-row__btn--open' : ''}"
+        type="button"
+        title="Ajustar distribuição"
+        on:click={() => { openSabor = !openSabor }}
+      >✏</button>
+    </div>
+    {#if openSabor}
+      <div class="details-expand" transition:slide={{ duration: 180 }}>
+        <FieldNumber
+          label="Fase 1 — proporção"
+          value={$v60State.sabor_pct1}
+          unit="%"
+          min={5}
+          max={50}
+          on:change={(e) => updateState('sabor_pct1', e.detail)}
+        />
+        <FieldNumber
+          label="Fase 2 — proporção"
+          value={$v60State.sabor_pct2}
+          unit="%"
+          min={5}
+          max={50}
+          on:change={(e) => updateState('sabor_pct2', e.detail)}
+        />
+      </div>
+    {/if}
   </section>
-
-  <FieldNumber
-    label="Fase 1 — proporção"
-    value={$v60State.sabor_pct1}
-    unit="%"
-    min={5}
-    max={50}
-    on:change={(e) => updateState('sabor_pct1', e.detail)}
-  />
-
-  <FieldNumber
-    label="Fase 2 — proporção"
-    value={$v60State.sabor_pct2}
-    unit="%"
-    min={5}
-    max={50}
-    on:change={(e) => updateState('sabor_pct2', e.detail)}
-  />
 
   <section class="calculator__field">
     <span class="calculator__field-label">Textura</span>
@@ -118,12 +145,17 @@
 </div>
 
 <script>
+  import { slide } from 'svelte/transition'
   import { createEventDispatcher } from 'svelte'
   import { v60State, v60Recipe, PROPORCOES, TEMPERATURAS, NUM_FASES, DISTRIBUICAO_SABOR } from '../../stores/v60.js'
   import SliderSelector from '../../components/SliderSelector.svelte'
   import FieldNumber from '../../components/FieldNumber.svelte'
 
   const dispatch = createEventDispatcher()
+
+  let openConc = false
+  let openTorra = false
+  let openSabor = false
 
   const OPCOES_FORCA = [
     { label: 'Intenso' },
@@ -223,15 +255,63 @@
     color: var(--color-accent);
   }
 
-  .calculator__field-static {
-    margin: 0;
-    font-size: 1rem;
+  /* details row */
+  .details-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .details-row__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .details-chip {
+    font-size: 0.78rem;
     font-weight: 600;
-    color: var(--color-text);
-    padding: 10px 14px;
+    color: var(--color-text-muted);
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    padding: 3px 10px;
+  }
+
+  .details-row__btn {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    color: var(--color-text-muted);
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+
+  .details-row__btn:hover,
+  .details-row__btn--open {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-bg);
+  }
+
+  /* expanded inputs */
+  .details-expand {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px;
     background: var(--color-card);
     border: 1.5px solid var(--color-border);
-    border-radius: 10px;
+    border-radius: 12px;
+    overflow: hidden;
   }
 
   .calculator__btn-gerar {
