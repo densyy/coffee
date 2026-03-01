@@ -14,23 +14,6 @@
   />
 
   <section class="calculator__field">
-    <span class="calculator__field-label">Força</span>
-    <SliderSelector
-      options={OPCOES_FORCA}
-      value={$v60State.forca}
-      subtitle={subtitleForca}
-      on:change={(e) => updateState('forca', e.detail)}
-    />
-  </section>
-
-  <FieldNumber
-    label="Quantidade de água"
-    value={$v60Recipe.aguaTotal}
-    unit="ml"
-    readonly
-  />
-
-  <section class="calculator__field">
     <span class="calculator__field-label">Moedor</span>
     <p class="calculator__field-static">Modus C3</p>
   </section>
@@ -45,17 +28,82 @@
   />
 
   <section class="calculator__field">
+    <span class="calculator__field-label">Concentração</span>
+    <SliderSelector
+      options={OPCOES_FORCA}
+      value={$v60State.forca}
+      on:change={(e) => updateForca(e.detail)}
+    />
+  </section>
+
+  <FieldNumber
+    label="Proporção"
+    value={$v60State.proporcao}
+    unit="ml/g"
+    min={5}
+    max={30}
+    on:change={(e) => updateState('proporcao', e.detail)}
+  />
+
+  <FieldNumber
+    label="Quantidade de água"
+    value={$v60Recipe.aguaTotal}
+    unit="ml"
+    readonly
+  />
+
+  <section class="calculator__field">
     <span class="calculator__field-label">Torra do café</span>
     <SliderSelector
       options={OPCOES_TORRA}
       value={$v60State.torra}
-      subtitle={subtitleTorra}
-      on:change={(e) => updateState('torra', e.detail)}
+      on:change={(e) => updateTorra(e.detail)}
     />
   </section>
 
+  <FieldNumber
+    label="Temperatura"
+    value={$v60State.temperatura}
+    unit="°C"
+    min={80}
+    max={100}
+    on:change={(e) => updateState('temperatura', e.detail)}
+  />
+
   <section class="calculator__field">
-    <span class="calculator__field-label">Corpo</span>
+    <span class="calculator__field-label">Tempo total</span>
+    <p class="calculator__field-static">{$v60Recipe.tempoTotal}</p>
+  </section>
+
+  <section class="calculator__field">
+    <span class="calculator__field-label">Perfil de sabores</span>
+    <SliderSelector
+      options={OPCOES_SABOR}
+      value={$v60State.sabor}
+      on:change={(e) => updateSabor(e.detail)}
+    />
+  </section>
+
+  <FieldNumber
+    label="Fase 1 — proporção"
+    value={$v60State.sabor_pct1}
+    unit="%"
+    min={5}
+    max={50}
+    on:change={(e) => updateState('sabor_pct1', e.detail)}
+  />
+
+  <FieldNumber
+    label="Fase 2 — proporção"
+    value={$v60State.sabor_pct2}
+    unit="%"
+    min={5}
+    max={50}
+    on:change={(e) => updateState('sabor_pct2', e.detail)}
+  />
+
+  <section class="calculator__field">
+    <span class="calculator__field-label">Textura</span>
     <SliderSelector
       options={OPCOES_CORPO}
       value={$v60State.corpo}
@@ -64,36 +112,23 @@
     />
   </section>
 
-  <section class="calculator__field">
-    <span class="calculator__field-label">Sabor</span>
-    <SliderSelector
-      options={OPCOES_SABOR}
-      value={$v60State.sabor}
-      subtitle={subtitleSabor}
-      on:change={(e) => updateState('sabor', e.detail)}
-    />
-  </section>
-
-  <section class="calculator__fases">
-    <span class="calculator__field-label">Fases de despejo</span>
-    <div class="calculator__fases-grid">
-      {#each $v60Recipe.fases as fase (fase.numero)}
-        <FaseCard {fase} />
-      {/each}
-    </div>
-  </section>
+  <button class="calculator__btn-gerar" type="button" on:click={() => dispatch('gerar')}>
+    Gerar Receita
+  </button>
 </div>
 
 <script>
-  import { v60State, v60Recipe, PROPORCOES, TEMPERATURAS, TEMPOS_TOTAIS_SEG, NUM_FASES, DISTRIBUICAO_SABOR, formatTime } from '../../stores/v60.js'
+  import { createEventDispatcher } from 'svelte'
+  import { v60State, v60Recipe, PROPORCOES, TEMPERATURAS, NUM_FASES, DISTRIBUICAO_SABOR } from '../../stores/v60.js'
   import SliderSelector from '../../components/SliderSelector.svelte'
-  import FaseCard from '../../components/FaseCard.svelte'
   import FieldNumber from '../../components/FieldNumber.svelte'
 
+  const dispatch = createEventDispatcher()
+
   const OPCOES_FORCA = [
-    { label: 'Suave' },
+    { label: 'Intenso' },
     { label: 'Equilibrado' },
-    { label: 'Intenso' }
+    { label: 'Suave' }
   ]
 
   const OPCOES_TORRA = [
@@ -103,9 +138,9 @@
   ]
 
   const OPCOES_CORPO = [
-    { label: 'Suave' },
-    { label: 'Equilibrado' },
-    { label: 'Intenso' }
+    { label: 'Delicado' },
+    { label: 'Cremoso' },
+    { label: 'Viscoso' }
   ]
 
   const OPCOES_SABOR = [
@@ -114,13 +149,19 @@
     { label: 'Doce' }
   ]
 
-  $: subtitleForca = `1:${PROPORCOES[$v60State.forca]}`
-  $: subtitleTorra = `${TEMPERATURAS[$v60State.torra]}°C · ${formatTime(TEMPOS_TOTAIS_SEG[$v60State.torra])}`
   $: subtitleCorpo = `${NUM_FASES[$v60State.corpo]} fases`
-  $: subtitleSabor = buildSubtitleSabor(DISTRIBUICAO_SABOR[$v60State.sabor])
 
-  function buildSubtitleSabor ([p1, p2]) {
-    return `Fase 1: ${p1 * 100}% · Fase 2: ${p2 * 100}%`
+  function updateForca (value) {
+    v60State.update(s => ({ ...s, forca: value, proporcao: PROPORCOES[value] }))
+  }
+
+  function updateTorra (value) {
+    v60State.update(s => ({ ...s, torra: value, temperatura: TEMPERATURAS[value] }))
+  }
+
+  function updateSabor (value) {
+    const [p1, p2] = DISTRIBUICAO_SABOR[value]
+    v60State.update(s => ({ ...s, sabor: value, sabor_pct1: Math.round(p1 * 100), sabor_pct2: Math.round(p2 * 100) }))
   }
 
   function updateState (key, value) {
@@ -193,16 +234,23 @@
     border-radius: 10px;
   }
 
-  .calculator__fases {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+  .calculator__btn-gerar {
+    margin-top: 8px;
+    padding: 14px;
+    width: 100%;
+    background: var(--color-accent);
+    color: var(--color-bg);
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: opacity 0.15s;
   }
 
-  .calculator__fases-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
+  .calculator__btn-gerar:active {
+    opacity: 0.8;
   }
 </style>
 

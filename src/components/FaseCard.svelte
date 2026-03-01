@@ -1,7 +1,8 @@
 <div class="fase-card">
   <span class="fase-card__header">FASE {fase.numero}</span>
   <span class="fase-card__time">{fase.timeStartFmt} → {fase.timeEndFmt}</span>
-  <span class="fase-card__volume">{fase.volume}ml</span>
+  <span class="fase-card__acumulado">{fase.aguaAcumulada}ml</span>
+  <span class="fase-card__volume">+{fase.volume}ml</span>
 </div>
 
 <script>
@@ -14,7 +15,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 4px;
     background: var(--color-card);
     border: 1.5px solid var(--color-border);
     border-radius: 14px;
@@ -38,9 +39,16 @@
     font-variant-numeric: tabular-nums;
   }
 
-  .fase-card__volume {
-    font-size: 1.5rem;
+  .fase-card__acumulado {
+    font-size: 1.6rem;
     font-weight: 700;
     color: var(--color-text);
+    line-height: 1.1;
+  }
+
+  .fase-card__volume {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
   }
 </style>
