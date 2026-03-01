@@ -12,7 +12,7 @@ export const TEMPERATURAS = [96, 93, 90]
 export const TEMPOS_TOTAIS_SEG = [210, 180, 150]
 
 // Número de fases por corpo: Delicado, Cremoso, Viscoso
-export const NUM_FASES = [5, 4, 3]
+export const NUM_FASES = [3, 4, 5]
 
 // Distribuição percentual [fase1, fase2] por sabor: Ácido, Equilibrado, Doce
 export const DISTRIBUICAO_SABOR = [
@@ -22,14 +22,15 @@ export const DISTRIBUICAO_SABOR = [
 ]
 
 const DEFAULT_STATE = {
-  gramas: 12,
-  click: 12,
+  gramas: 15,
+  click: 14,
   forca: 1,
   torra: 1,
   corpo: 1,
   sabor: 1,
   proporcao: 15,
   temperatura: 93,
+  tempoTotalSeg: null,
   sabor_pct1: 20,
   sabor_pct2: 20
 }
@@ -124,19 +125,19 @@ const calcFases = (volumes, tempoTotalSeg) => {
   })
 }
 
-const calcularReceita = (gramas, torra, corpo, proporcao, temperatura, sabor_pct1, sabor_pct2) => {
+const calcularReceita = (gramas, torra, corpo, proporcao, temperatura, sabor_pct1, sabor_pct2, tempoTotalSeg) => {
   const aguaTotal = calcAguaTotal(gramas, proporcao)
   const numFases = NUM_FASES[corpo]
-  const tempoTotalSeg = TEMPOS_TOTAIS_SEG[torra]
+  const tempoTotal = tempoTotalSeg ?? TEMPOS_TOTAIS_SEG[torra]
   const volumes = calcVolumes(aguaTotal, numFases, sabor_pct1, sabor_pct2)
-  const fases = calcFases(volumes, tempoTotalSeg)
+  const fases = calcFases(volumes, tempoTotal)
 
   return {
     aguaTotal,
     proporcao,
     numFases,
     temperatura,
-    tempoTotal: formatTime(tempoTotalSeg),
+    tempoTotal: formatTime(tempoTotal),
     fases
   }
 }
@@ -167,6 +168,6 @@ export const v60Recipe = derived(
   v60State,
   ($s) => calcularReceita(
     $s.gramas, $s.torra, $s.corpo, $s.proporcao,
-    $s.temperatura, $s.sabor_pct1, $s.sabor_pct2
+    $s.temperatura, $s.sabor_pct1, $s.sabor_pct2, $s.tempoTotalSeg
   )
 )

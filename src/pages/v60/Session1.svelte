@@ -84,6 +84,14 @@
           max={100}
           on:change={(e) => updateField('temperatura', e.detail)}
         />
+        <FieldNumber
+          label="Tempo total"
+          value={getTempo($v60State.tempoTotalSeg, $v60State.torra)}
+          unit="s"
+          min={60}
+          max={300}
+          on:change={(e) => updateField('tempoTotalSeg', e.detail)}
+        />
       </div>
     {/if}
   </section>
@@ -147,7 +155,7 @@
 <script>
   import { slide } from 'svelte/transition'
   import { createEventDispatcher } from 'svelte'
-  import { v60State, v60Recipe, PROPORCOES, TEMPERATURAS, NUM_FASES, DISTRIBUICAO_SABOR } from '../../stores/v60.js'
+  import { v60State, v60Recipe, PROPORCOES, TEMPERATURAS, TEMPOS_TOTAIS_SEG, NUM_FASES, DISTRIBUICAO_SABOR } from '../../stores/v60.js'
   import SliderSelector from '../../components/SliderSelector.svelte'
   import FieldNumber from '../../components/FieldNumber.svelte'
 
@@ -198,7 +206,8 @@
     v60State.update(s => ({
       ...s,
       torra: value,
-      temperatura: TEMPERATURAS[value]
+      temperatura: TEMPERATURAS[value],
+      tempoTotalSeg: null
     }))
   }
 
@@ -213,6 +222,8 @@
   }
 
   const getBodySubtitle = (corpo) => `${NUM_FASES[corpo]} fases`
+
+  const getTempo = (tempoCustomizado, torra) => tempoCustomizado ?? TEMPOS_TOTAIS_SEG[torra]
 
   $: bodySubtitle = getBodySubtitle($v60State.corpo)
 </script>
