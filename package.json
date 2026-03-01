@@ -1,0 +1,19 @@
+{
+  "name": "svelte-web",
+  "version": "26.02.00",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "svelte": "^5.50.0",
+    "svelte-spa-router": "^4.0.1"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^6.2.4",
+    "svelte-preprocess": "^6.0.3",
+    "vite": "^7.3.1"
+  }
+}
