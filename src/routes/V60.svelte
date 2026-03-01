@@ -7,16 +7,7 @@
   import { onMount } from 'svelte'
   import { mountNoDrag } from '../lib/noDrag'
 
-  let teardown
-
-  onMount(() => {
-    noDrag()
-  })
-
-  function noDrag () {
-    teardown = mountNoDrag(document.body)
-    return () => teardown && teardown()
-  }
+  onMount(() => mountNoDrag(document.body))
 </script>
 
 <style>

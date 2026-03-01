@@ -5,26 +5,16 @@
     <p class="calculator__subtitle">Método Tetsu 4:6</p>
   </header>
 
-  <!-- Gramas de café -->
-  <section class="calculator__field">
-    <label class="field__label" for="cafeGramas">Gramas de café</label>
-    <div class="field__input-row">
-      <input
-        class="field__input"
-        id="cafeGramas"
-        type="number"
-        min="1"
-        max="100"
-        value={$v60State.cafeGramas}
-        on:input={handleGramasInput}
-      />
-      <span class="field__unit">g</span>
-    </div>
-  </section>
+  <FieldNumber
+    id="gramas"
+    label="Gramas de café"
+    value={$v60State.gramas}
+    unit="g"
+    on:change={(e) => updateState('gramas', e.detail)}
+  />
 
-  <!-- Força -->
   <section class="calculator__field">
-    <span class="field__label">Força</span>
+    <span class="calculator__field-label">Força</span>
     <SliderSelector
       options={OPCOES_FORCA}
       value={$v60State.forca}
@@ -33,29 +23,29 @@
     />
   </section>
 
-  <!-- Quantidade de água -->
+  <FieldNumber
+    label="Quantidade de água"
+    value={$v60Recipe.aguaTotal}
+    unit="ml"
+    readonly
+  />
+
   <section class="calculator__field">
-    <span class="field__label">Quantidade de água</span>
-    <div class="field__input-row">
-      <input
-        class="field__input field__input--readonly"
-        type="number"
-        value={$v60Recipe.aguaTotal}
-        readonly
-      />
-      <span class="field__unit">ml</span>
-    </div>
+    <span class="calculator__field-label">Moedor</span>
+    <p class="calculator__field-static">Modus C3</p>
   </section>
 
-  <!-- Moedor -->
-  <section class="calculator__field">
-    <span class="field__label">Moedor</span>
-    <p class="field__static">Modus C3</p>
-  </section>
+  <FieldNumber
+    id="click"
+    label="Click do moedor"
+    value={$v60State.click}
+    unit="clicks"
+    max={50}
+    on:change={(e) => updateState('click', e.detail)}
+  />
 
-  <!-- Torra -->
   <section class="calculator__field">
-    <span class="field__label">Torra do café</span>
+    <span class="calculator__field-label">Torra do café</span>
     <SliderSelector
       options={OPCOES_TORRA}
       value={$v60State.torra}
@@ -64,9 +54,8 @@
     />
   </section>
 
-  <!-- Corpo -->
   <section class="calculator__field">
-    <span class="field__label">Corpo</span>
+    <span class="calculator__field-label">Corpo</span>
     <SliderSelector
       options={OPCOES_CORPO}
       value={$v60State.corpo}
@@ -75,9 +64,8 @@
     />
   </section>
 
-  <!-- Sabor -->
   <section class="calculator__field">
-    <span class="field__label">Sabor</span>
+    <span class="calculator__field-label">Sabor</span>
     <SliderSelector
       options={OPCOES_SABOR}
       value={$v60State.sabor}
@@ -86,10 +74,9 @@
     />
   </section>
 
-  <!-- Fases -->
   <section class="calculator__fases">
-    <h2 class="fases__title">Fases de despejo</h2>
-    <div class="fases__grid">
+    <span class="calculator__field-label">Fases de despejo</span>
+    <div class="calculator__fases-grid">
       {#each $v60Recipe.fases as fase (fase.numero)}
         <FaseCard {fase} />
       {/each}
@@ -101,6 +88,7 @@
   import { v60State, v60Recipe, PROPORCOES, TEMPERATURAS, TEMPOS_TOTAIS_SEG, NUM_FASES, DISTRIBUICAO_SABOR, formatTime } from '../../stores/v60.js'
   import SliderSelector from '../../components/SliderSelector.svelte'
   import FaseCard from '../../components/FaseCard.svelte'
+  import FieldNumber from '../../components/FieldNumber.svelte'
 
   const OPCOES_FORCA = [
     { label: 'Suave' },
@@ -127,27 +115,16 @@
   ]
 
   $: subtitleForca = `1:${PROPORCOES[$v60State.forca]}`
-
   $: subtitleTorra = `${TEMPERATURAS[$v60State.torra]}°C · ${formatTime(TEMPOS_TOTAIS_SEG[$v60State.torra])}`
-
   $: subtitleCorpo = `${NUM_FASES[$v60State.corpo]} fases`
+  $: subtitleSabor = buildSubtitleSabor(DISTRIBUICAO_SABOR[$v60State.sabor])
 
-  $: {
-    const [p1, p2] = DISTRIBUICAO_SABOR[$v60State.sabor]
-    subtitleSabor = `Fase 1: ${p1 * 100}% · Fase 2: ${p2 * 100}%`
+  function buildSubtitleSabor ([p1, p2]) {
+    return `Fase 1: ${p1 * 100}% · Fase 2: ${p2 * 100}%`
   }
-
-  let subtitleSabor = ''
 
   function updateState (key, value) {
     v60State.update(s => ({ ...s, [key]: value }))
-  }
-
-  function handleGramasInput (e) {
-    const value = Number(e.target.value)
-    if (value > 0) {
-      v60State.update(s => ({ ...s, cafeGramas: value }))
-    }
   }
 </script>
 
@@ -197,7 +174,7 @@
     gap: 8px;
   }
 
-  .field__label {
+  .calculator__field-label {
     font-size: 0.78rem;
     font-weight: 700;
     letter-spacing: 0.07em;
@@ -205,50 +182,7 @@
     color: var(--color-accent);
   }
 
-  .field__input-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .field__input {
-    flex: 1;
-    padding: 10px 14px;
-    border: 1.5px solid var(--color-border);
-    border-radius: 10px;
-    background: var(--color-card);
-    color: var(--color-text);
-    font-size: 1.1rem;
-    font-weight: 600;
-    font-family: inherit;
-    outline: none;
-    transition: border-color 0.15s;
-    -moz-appearance: textfield;
-  }
-
-  .field__input::-webkit-outer-spin-button,
-  .field__input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-
-  .field__input:focus {
-    border-color: var(--color-accent);
-  }
-
-  .field__input--readonly {
-    cursor: default;
-    opacity: 0.8;
-  }
-
-  .field__unit {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--color-text-muted);
-    min-width: 28px;
-  }
-
-  .field__static {
+  .calculator__field-static {
     margin: 0;
     font-size: 1rem;
     font-weight: 600;
@@ -265,16 +199,7 @@
     gap: 14px;
   }
 
-  .fases__title {
-    margin: 0;
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: var(--color-accent);
-  }
-
-  .fases__grid {
+  .calculator__fases-grid {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
