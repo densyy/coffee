@@ -23,10 +23,6 @@
       <span class="receita__resumo-label">Tempo total</span>
       <span class="receita__resumo-value">{$v60Recipe.tempoTotal}</span>
     </div>
-    <div class="receita__resumo-item">
-      <span class="receita__resumo-label">Moedor</span>
-      <span class="receita__resumo-value">Modus C3 · {$v60State.click} clicks</span>
-    </div>
   </div>
 
   <section class="receita__fases">

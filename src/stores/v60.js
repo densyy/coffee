@@ -65,25 +65,62 @@ const calcVolumes = (aguaTotal, numFases, pct1, pct2) => {
   return volumes
 }
 
+// Calcula tempo de cada fase com base no volume e peso progressivo
+const calcTemposPorFase = (volumes, tempoTotalSeg) => {
+  const numFases = volumes.length
+  const TEMPO_PRIMEIRA_FASE = 30
+
+  // Fase 1 sempre 30s, distribuir o resto
+  const tempoDisponivel = tempoTotalSeg - TEMPO_PRIMEIRA_FASE
+  const tempos = [TEMPO_PRIMEIRA_FASE]
+
+  // Calcular peso de cada fase a partir da segunda (aumenta com o número)
+  // Peso: fase 2 = 0.8, fase 3 = 1.0, fase 4 = 1.2, fase 5 = 1.4, etc
+  const pesos = volumes.map((_, i) => {
+    if (i === 0) return 0 // Fase 1 já tem tempo fixo
+    return 0.6 + (i * 0.2) // Aumenta peso progressivamente
+  })
+
+  // Calcular volume * peso para cada fase (exceto primeira)
+  let somaVolumePeso = 0
+  for (let i = 1; i < numFases; i++) {
+    somaVolumePeso += volumes[i] * pesos[i]
+  }
+
+  // Distribuir tempo disponível proporcionalmente
+  for (let i = 1; i < numFases; i++) {
+    const tempo = Math.round((volumes[i] * pesos[i] / somaVolumePeso) * tempoDisponivel)
+    tempos.push(tempo)
+  }
+
+  return tempos
+}
+
 const calcFases = (volumes, tempoTotalSeg) => {
   const numFases = volumes.length
-  const tempoPorFase = Math.round(tempoTotalSeg / numFases)
+  const tempos = calcTemposPorFase(volumes, tempoTotalSeg)
 
+  let timeStart = 0
   let aguaAcumulada = 0
+
   return volumes.map((volume, i) => {
     aguaAcumulada += volume
-    const timeStart = i * tempoPorFase
-    const timeEnd = i === numFases - 1 ? tempoTotalSeg : (i + 1) * tempoPorFase
+    const duracao = tempos[i]
+    const timeEnd = timeStart + duracao
 
-    return {
+    const fase = {
       numero: i + 1,
       timeStart,
       timeEnd,
       volume,
+      duracao,
       aguaAcumulada,
       timeStartFmt: formatTime(timeStart),
       timeEndFmt: formatTime(timeEnd)
     }
+
+    timeStart = timeEnd
+    return fase
   })
 }
 
