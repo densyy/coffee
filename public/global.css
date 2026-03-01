@@ -6,8 +6,6 @@
   --color-text:        #4A2C1A;
   --color-text-muted:  #7A5230;
   --color-accent:      #C48A5C;
-
-  --button-radius: 8px;
 }
 
 
@@ -42,16 +40,7 @@ body {
   color: var(--color-text);
 }
 
-a {
-  color: inherit;
-}
-
 img {
   max-width: 100%;
   display: block;
-}
-
-button {
-  font: inherit;
-  outline: none;
 }

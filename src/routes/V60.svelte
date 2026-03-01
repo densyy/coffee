@@ -7,10 +7,10 @@
 </div>
 
 <script>
+  import { onMount } from 'svelte'
   import Session1 from '../pages/v60/Session1.svelte'
   import Session2 from '../pages/v60/Session2.svelte'
-  import { onMount } from 'svelte'
-  import { mountNoDrag } from '../lib/noDrag'
+  import { mountNoDrag } from '../lib/noDrag.js'
 
   let sessao = 1
 

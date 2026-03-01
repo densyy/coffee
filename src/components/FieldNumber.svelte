@@ -11,9 +11,11 @@
       {max}
       {value}
       {readonly}
-      on:input={handleInput}
+      on:input={onInput}
     />
-    <span class="field__unit">{unit}</span>
+    {#if unit}
+      <span class="field__unit">{unit}</span>
+    {/if}
   </div>
 </div>
 
@@ -30,7 +32,7 @@
 
   const dispatch = createEventDispatcher()
 
-  function handleInput (e) {
+  const onInput = (e) => {
     const parsed = Number(e.target.value)
     if (parsed > 0) dispatch('change', parsed)
   }

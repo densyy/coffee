@@ -10,7 +10,7 @@
     label="Gramas de café"
     value={$v60State.gramas}
     unit="g"
-    on:change={(e) => updateState('gramas', e.detail)}
+    on:change={(e) => updateField('gramas', e.detail)}
   />
 
   <FieldNumber
@@ -19,15 +19,15 @@
     value={$v60State.click}
     unit="clicks"
     max={50}
-    on:change={(e) => updateState('click', e.detail)}
+    on:change={(e) => updateField('click', e.detail)}
   />
 
   <section class="calculator__field">
     <span class="calculator__field-label">Concentração</span>
     <SliderSelector
-      options={OPCOES_FORCA}
+      options={forceOptions}
       value={$v60State.forca}
-      on:change={(e) => updateForca(e.detail)}
+      on:change={(e) => updateForce(e.detail)}
     />
     <div class="details-row">
       <div class="details-row__chips">
@@ -49,7 +49,7 @@
           unit="ml/g"
           min={5}
           max={30}
-          on:change={(e) => updateState('proporcao', e.detail)}
+          on:change={(e) => updateField('proporcao', e.detail)}
         />
       </div>
     {/if}
@@ -58,9 +58,9 @@
   <section class="calculator__field">
     <span class="calculator__field-label">Torra do café</span>
     <SliderSelector
-      options={OPCOES_TORRA}
+      options={roastOptions}
       value={$v60State.torra}
-      on:change={(e) => updateTorra(e.detail)}
+      on:change={(e) => updateRoast(e.detail)}
     />
     <div class="details-row">
       <div class="details-row__chips">
@@ -82,7 +82,7 @@
           unit="°C"
           min={80}
           max={100}
-          on:change={(e) => updateState('temperatura', e.detail)}
+          on:change={(e) => updateField('temperatura', e.detail)}
         />
       </div>
     {/if}
@@ -91,9 +91,9 @@
   <section class="calculator__field">
     <span class="calculator__field-label">Perfil de sabores</span>
     <SliderSelector
-      options={OPCOES_SABOR}
+      options={flavorOptions}
       value={$v60State.sabor}
-      on:change={(e) => updateSabor(e.detail)}
+      on:change={(e) => updateFlavor(e.detail)}
     />
     <div class="details-row">
       <div class="details-row__chips">
@@ -115,7 +115,7 @@
           unit="%"
           min={5}
           max={50}
-          on:change={(e) => updateState('sabor_pct1', e.detail)}
+          on:change={(e) => updateField('sabor_pct1', e.detail)}
         />
         <FieldNumber
           label="Fase 2 — proporção"
@@ -123,7 +123,7 @@
           unit="%"
           min={5}
           max={50}
-          on:change={(e) => updateState('sabor_pct2', e.detail)}
+          on:change={(e) => updateField('sabor_pct2', e.detail)}
         />
       </div>
     {/if}
@@ -132,10 +132,10 @@
   <section class="calculator__field">
     <span class="calculator__field-label">Textura</span>
     <SliderSelector
-      options={OPCOES_CORPO}
+      options={bodyOptions}
       value={$v60State.corpo}
-      subtitle={subtitleCorpo}
-      on:change={(e) => updateState('corpo', e.detail)}
+      subtitle={getBodySubtitle($v60State.corpo)}
+      on:change={(e) => updateField('corpo', e.detail)}
     />
   </section>
 
@@ -157,48 +157,64 @@
   let openTorra = false
   let openSabor = false
 
-  const OPCOES_FORCA = [
+  const forceOptions = [
     { label: 'Intenso' },
     { label: 'Equilibrado' },
     { label: 'Suave' }
   ]
 
-  const OPCOES_TORRA = [
+  const roastOptions = [
     { label: 'Clara' },
     { label: 'Média' },
     { label: 'Escura' }
   ]
 
-  const OPCOES_CORPO = [
+  const bodyOptions = [
     { label: 'Delicado' },
     { label: 'Cremoso' },
     { label: 'Viscoso' }
   ]
 
-  const OPCOES_SABOR = [
+  const flavorOptions = [
     { label: 'Ácido' },
     { label: 'Equilibrado' },
     { label: 'Doce' }
   ]
 
-  $: subtitleCorpo = `${NUM_FASES[$v60State.corpo]} fases`
-
-  function updateForca (value) {
-    v60State.update(s => ({ ...s, forca: value, proporcao: PROPORCOES[value] }))
-  }
-
-  function updateTorra (value) {
-    v60State.update(s => ({ ...s, torra: value, temperatura: TEMPERATURAS[value] }))
-  }
-
-  function updateSabor (value) {
-    const [p1, p2] = DISTRIBUICAO_SABOR[value]
-    v60State.update(s => ({ ...s, sabor: value, sabor_pct1: Math.round(p1 * 100), sabor_pct2: Math.round(p2 * 100) }))
-  }
-
-  function updateState (key, value) {
+  // Funções puras para atualização de estado
+  const updateField = (key, value) => {
     v60State.update(s => ({ ...s, [key]: value }))
   }
+
+  const updateForce = (value) => {
+    v60State.update(s => ({
+      ...s,
+      forca: value,
+      proporcao: PROPORCOES[value]
+    }))
+  }
+
+  const updateRoast = (value) => {
+    v60State.update(s => ({
+      ...s,
+      torra: value,
+      temperatura: TEMPERATURAS[value]
+    }))
+  }
+
+  const updateFlavor = (value) => {
+    const [pct1, pct2] = DISTRIBUICAO_SABOR[value]
+    v60State.update(s => ({
+      ...s,
+      sabor: value,
+      sabor_pct1: Math.round(pct1 * 100),
+      sabor_pct2: Math.round(pct2 * 100)
+    }))
+  }
+
+  const getBodySubtitle = (corpo) => `${NUM_FASES[corpo]} fases`
+
+  $: bodySubtitle = getBodySubtitle($v60State.corpo)
 </script>
 
 <style>

@@ -3,7 +3,7 @@
     {#each options as option, i}
       <button
         class="slider__option{value === i ? ' slider__option--active' : ''}"
-        on:click={() => handleChange(i)}
+        on:click={() => dispatch('change', i)}
         type="button"
       >
         {option.label}
@@ -23,10 +23,6 @@
   export let subtitle = ''
 
   const dispatch = createEventDispatcher()
-
-  function handleChange (index) {
-    dispatch('change', index)
-  }
 </script>
 
 <style>
