@@ -8,6 +8,7 @@
 </script>
 
 <style>
+  @import '../public/global.css';
   .content {
     width: 100%;
     height: 100%;
