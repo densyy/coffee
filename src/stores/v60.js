@@ -6,7 +6,7 @@ const STORAGE_KEY = 'v60_recipe'
 export const PROPORCOES = [12, 15, 18]
 
 // Configurações de temperatura por torra: Clara, Média, Escura
-export const TEMPERATURAS = [96, 93, 90]
+export const TEMPERATURAS = [95, 92, 88]
 
 // Tempo total em segundos por torra: Clara=3:30, Média=3:00, Escura=2:30
 export const TEMPOS_TOTAIS_SEG = [210, 180, 150]
